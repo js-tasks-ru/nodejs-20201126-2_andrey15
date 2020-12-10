@@ -34,7 +34,7 @@ function writeFileToServer(req, res, pathname, filepath) {
   const folder = path.join(__dirname, 'files');
 
   fs.stat(folder, (error, stat) => {
-    if (stat) {
+    if (stat && stat.isDirectory()) {
       createFile(filepath, req, res);
 
       return;
