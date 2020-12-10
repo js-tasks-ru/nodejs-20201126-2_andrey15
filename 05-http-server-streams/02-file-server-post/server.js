@@ -84,7 +84,6 @@ function createFile(filepath, req, res) {
     req.on('end', () => {
       res.statusCode = 201;
       res.end();
-      console.log('end');
     });
 
     res.on('close', () => {
