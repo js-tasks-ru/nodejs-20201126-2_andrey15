@@ -11,14 +11,14 @@ const router = new Router();
 const resolveFunctionList = new Map();
 
 router.get('/subscribe', async (ctx, next) => {
-  const {r} = ctx.request.query;
+  const idMessage = Math.random();
 
   const promise = new Promise((resolve, reject) => {
-    resolveFunctionList.set(r, resolve);
+    resolveFunctionList.set(idMessage, resolve);
 
     ctx.req.on('close', () => {
-      if (resolveFunctionList.has(r)) {
-        resolveFunctionList.delete(r);
+      if (resolveFunctionList.has(idMessage)) {
+        resolveFunctionList.delete(idMessage);
       }
     });
   });
@@ -35,9 +35,13 @@ router.get('/subscribe', async (ctx, next) => {
 router.post('/publish', async (ctx, next) => {
   const {message} = ctx.request.body;
 
-  resolveFunctionList.forEach((value, valueAgain, set) => {
-    value(message);
-  });
+  if (!message) {
+    return;
+  }
+
+  for (const item of resolveFunctionList.values()) {
+    item(message);
+  }
 
   resolveFunctionList.clear();
 
